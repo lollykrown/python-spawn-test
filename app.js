@@ -4,6 +4,8 @@ const fs = require('fs')
 const { promisify } = require('util')
 const { spawn } = require('child_process')
 const debug = require('debug')('app: py-node')
+const cacheMiddleware = require('./cacheMiddleware')
+
 const app = express()
 
 const port = 4000
@@ -20,23 +22,14 @@ const readdir = promisify(fs.readdir);
 
 const directoryPath = path.join(__dirname + '/' + 'scripts');
 
-app.get('/', (req, res) => {
-
+app.get('/', cacheMiddleware, (req, res) => {
    async function doStuff(dir) {
       const files = await readdir(dir)
       let dat = [];
-      let outside = [];
-      let pathName = directoryPath
-
-      let str
-      let pyth = {}
-      let py;
+      let str, py;
       for (let file of files) {
          try {
-            //console.log(path.extname(file))
             if (path.extname(file) === '.py') {
-               //console.log(path.basename(file))
-               //console.log(`it's a py file, ${file}`)
                py = spawn(
                   'python',
                   ['-u', path.join(__dirname, 'scripts', file),
@@ -51,14 +44,14 @@ app.get('/', (req, res) => {
             py.stdout.on('data', function (data) {
                //console.log('Pipe data from python file ...');
                str = data.toString('utf8');
-               const res = str.split(" ");
-               console.log(res[4], res[5])
+               const res = str.split(' ');
                dat.push({
-                  file: path.basename(file, '.py'),
+                  file: path.basename(file),
                   output: str,
                   name: `${res[4]} ${res[5]}`,
                   id: `${res[9]}`,
-                  language: `${res[11]}`,
+                  email: `${res[12]}`,
+                  language: `${res[14]}`,
                   status: 'undetermined'
                })
             });
