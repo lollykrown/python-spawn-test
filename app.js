@@ -22,7 +22,7 @@ const readdir = promisify(fs.readdir);
 
 const directoryPath = path.join(__dirname + '/' + 'scripts');
 
-app.get('/', (req, res) => {
+app.get('/', cacheMiddleware, (req, res) => {
    async function doStuff(dir) {
       const files = await readdir(dir)
       let dat = [];
