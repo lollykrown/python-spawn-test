@@ -43,13 +43,20 @@ app.get('/', (req, res) => {
                      '--foo', 'some value']);
             } else if (path.extname(file) === '.js') {
                py = spawn('node', [path.join(__dirname, 'scripts', file)]);
+            // } else if (path.extname(file) === '.php') {
+            //    py = spawn('php', [path.join(__dirname, 'scripts', file)]);
+            } else {
+               console.log(`File type not yet supported ${path.extname(file)}`)
             }
             py.stdout.on('data', function (data) {
                //console.log('Pipe data from python file ...');
                str = data.toString('utf8');
+               const res = str.split(" ");
+               console.log(res[4], res[5])
                dat.push({
                   msg: str,
-                  fileName: path.basename(file, '.py')
+                  fileName: path.basename(file, '.py'),
+                  name: `${res[4]} ${res[5]}`
                })
             });
             py.stderr.on('data', (code) => {
@@ -87,12 +94,11 @@ app.get('/', (req, res) => {
       //res.send(`<h3>${dat}</h3>`)
       //})
       py.stdout.on('end', () => {
-         console.log('foobar ending: ', dat)
+         //console.log('foobar ending: ', dat)
          outside = dat
          res.json(dat)
          //return outside
       })
-      console.log('out:', outside)
    }
    doStuff(directoryPath)
 });
