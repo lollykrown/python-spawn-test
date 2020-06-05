@@ -54,9 +54,12 @@ app.get('/', (req, res) => {
                const res = str.split(" ");
                console.log(res[4], res[5])
                dat.push({
-                  msg: str,
-                  fileName: path.basename(file, '.py'),
-                  name: `${res[4]} ${res[5]}`
+                  file: path.basename(file, '.py'),
+                  output: str,
+                  name: `${res[4]} ${res[5]}`,
+                  id: `${res[9]}`,
+                  language: `${res[11]}`,
+                  status: 'undetermined'
                })
             });
             py.stderr.on('data', (code) => {
