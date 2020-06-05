@@ -1,2 +1,2 @@
 # python-spawn-test
-trying out reading python files in nodeJs
+Trying out reading multiple python and javascript files in nodeJs
