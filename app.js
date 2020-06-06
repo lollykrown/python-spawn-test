@@ -42,9 +42,6 @@ app.get('/', cacheMiddleware, (req, res) => {
                py = spawn('node', [path.join(__dirname, 'scripts', file)]);
             } else if (path.extname(file) === '.php') {
                py = spawn('php', [path.join(__dirname, 'scripts', file)]);
-            } else if (path.extname(file) === '.java') {
-               py = spawn('java', [path.join(__dirname, 'scripts', file)]);
-               console.log('this is a java file')
             } else {
                console.log(`${path.basename(file)} file type with ext ${path.extname(file)} is not supported`)
             }
@@ -54,8 +51,9 @@ app.get('/', cacheMiddleware, (req, res) => {
                const res = str.split(' ');
                const language = `${res[14]}`
                let status;
-               if (language == 'javascript' || language == 'JavaScript'|| language == 'Javascript' || language == 'python'|| language == 'Python'
-                || language == 'php' || language == 'PHP' || language == 'nodejs' || language == 'NodeJs') {
+               if (language == 'javascript' || language == 'JavaScript'|| language == 'Javascript' || language == 'javaScript'
+               || language == 'python'|| language == 'Python' || language == 'php' || language == 'PHP' || language == 'nodejs' 
+               || language == 'NodeJs' || language == 'nodeJs' || language == 'Golang') {
                   status = 'pass'
                } else {
                   status = 'fail'
