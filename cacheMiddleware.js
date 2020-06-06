@@ -19,7 +19,7 @@ module.exports = function cacheMiddleware(req, res, next) {
         res.send = (body) => {
           cache.setKey(key, body)
           cache.save()
-          setTimeout(del, 30000, key)
+          setTimeout(del, 3000, key)
           //setTimeout(cache.removeKey(key), 60000);
           res.sendResponse(body)
         }

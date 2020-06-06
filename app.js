@@ -10,6 +10,10 @@ const app = express()
 
 const port = 4000
 
+app.use(express.static(path.join(__dirname, '/public/')));
+app.set('views', './views');
+app.set('view engine', 'ejs');
+
 function runScript(file) {
    return spawn('python', [
       "-u",
@@ -22,7 +26,7 @@ const readdir = promisify(fs.readdir);
 
 const directoryPath = path.join(__dirname + '/' + 'scripts');
 
-app.get('/', cacheMiddleware, (req, res) => {
+app.get('/', (req, res) => {
    async function doStuff(dir) {
       const files = await readdir(dir)
       let dat = [];
@@ -36,8 +40,8 @@ app.get('/', cacheMiddleware, (req, res) => {
                      '--foo', 'some value']);
             } else if (path.extname(file) === '.js') {
                py = spawn('node', [path.join(__dirname, 'scripts', file)]);
-            // } else if (path.extname(file) === '.php') {
-            //    py = spawn('php', [path.join(__dirname, 'scripts', file)]);
+            } else if (path.extname(file) === '.php') {
+               py = spawn('php', [path.join(__dirname, 'scripts', file)]);
             } else {
                console.log(`File type not yet supported ${path.extname(file)}`)
             }
@@ -77,7 +81,7 @@ app.get('/', cacheMiddleware, (req, res) => {
       py.stdout.on('end', () => {
          //console.log('foobar ending: ', dat)
          outside = dat
-         res.json(dat)
+         res.render('index', {da: dat})
          //return outside
       })
    }

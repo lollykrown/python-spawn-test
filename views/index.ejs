@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style media="screen">
+    body {
+      font-family: lato;
+      background: #eee;
+      margin: 0;
+      padding: 0;
+    }
+
+    #scroll-to {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      width: 40px;
+      height: 40px;
+      background: blue;
+      transition: all 0.5s linear;
+    }
+
+    #scroll-to span {
+      display: inline-block;
+      position: relative;
+      width: 100%;
+      height: 100%;
+    }
+
+    #scroll-to span::before,
+    #scroll-to span::after {
+      content: "";
+      position: absolute;
+
+    }
+
+    #scroll-to span::after {
+      width: 2px;
+      height: 20px;
+      background: #fff;
+      top: 12px;
+      left: 19.5px;
+
+    }
+
+    #scroll-to span::before {
+      width: 7px;
+      height: 7px;
+      border-top: 2px solid #fff;
+      border-left: 2px solid #fff;
+      transform: rotate(45deg);
+      left: 16px;
+      top: 11px;
+    }
+
+    .show-scrollTo {
+      opacity: 1;
+      /* display: block; */
+    }
+
+    .hide-scrollTo {
+      opacity: 0;
+      /* display: none; */
+
+    }
+
+    #scroll-to:hover {
+      transform: translateY(-5px);
+    }
+
+    .hidebar {
+      display: none;
+    }
+
+    .showbar {
+      display: flex;
+    }
+
+    .chart {
+      display: flex;
+      justify-content: center;
+      flex-direction: column;
+      position: fixed;
+      top: 70px;
+      right: 5px;
+    }
+
+    .breakdown {
+      background: black;
+      color: #fff;
+      padding: 10px;
+      border-radius: 20px 6px 20px 6px;
+      width: 150px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      opacity: 0;
+      animation-name: magicslide;
+      animation-fill-mode: forwards;
+      animation-duration: 1s;
+    }
+
+    .breakdown~span {
+      animation-name: magicslide;
+      animation-fill-mode: forwards;
+      animation-duration: 1s;
+      animation-delay: 0.5s;
+      opacity: 0;
+      margin-bottom: 10px;
+    }
+
+    .chart-desc {
+      position: relative;
+      margin-left: 20px;
+      margin-top: 5px;
+      transform: translateY(20px);
+    }
+
+    .chart-desc::before {
+      content: "";
+      position: absolute;
+      left: -20px;
+      top: 1px;
+      width: 15px;
+      height: 15px;
+      border-radius: 2px;
+      background: black;
+    }
+
+    .bar-div+p.chart-desc::before {
+      background: #24a824;
+    }
+
+    .bar-div+p.chart-desc+p.chart-desc::before {
+      background: #e02727;
+    }
+
+
+
+    .titans {
+      left: 0;
+      right: 0;
+      top: 0;
+      height: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 5px;
+      background-color: #000;
+      /* background: linear-gradient(to right, rgb(0, 4, 40), rgb(0, 78, 146)); */
+      color: #fff;
+      font-size: 1.8rem;
+      font-weight: bold;
+      position: fixed;
+      font-family: monospace;
+      box-shadow: 0 2px 5px #ddd;
+      z-index: 10;
+    }
+
+    .titans p span:nth-of-type(1) {
+      color: blue;
+      margin-left: 2px;
+    }
+
+    .titans p {
+      width: 200px;
+      position: relative;
+      text-transform: uppercase;
+    }
+
+    .titans p::after {
+      content: "";
+      position: absolute;
+      bottom: -5px;
+      height: 4px;
+      width: 50px;
+      right: 45px;
+      background-color: blue;
+    }
+
+    .container {
+      display: flex;
+      justify-content: space-between;
+      flex-flow: row wrap-reverse;
+      /* min-height: 100vh; */
+      margin-bottom: 60px;
+      margin-top: 60px;
+    }
+
+    .bar-div {
+      width: 220px;
+      height: 250px;
+      display: flex;
+      justify-content: space-between;
+      text-align: center;
+      position: relative;
+      border-left: 2px solid #ccc;
+      border-bottom: 2px solid #ccc;
+      margin-right: 20px;
+      /* margin-top: 50px; */
+      background-image: url('https://i.ya-webdesign.com/images/graph-paper-background-png-4.png');
+      background-position: center;
+      /* background-repeat: no-repeat; */
+      background-size: contain;
+    }
+
+    .bar-pass,
+    .bar-fail {
+      position: absolute;
+      bottom: 0;
+      width: 40px;
+      color: black;
+      font-size: 0.9rem;
+      font-weight: bold;
+      /* display: flex; */
+      justify-content: center;
+      align-items: flex-start;
+      padding: 5px;
+    }
+
+    .bar-div p {
+      transform: translate(-7px, -35px);
+    }
+
+
+    .bar-pass {
+      border-top: 6px solid #9ff691;
+      border-left: 16px solid #006800;
+      background: #24a824;
+      left: 35px;
+      opacity: 0;
+      animation-name: magicht;
+      animation-fill-mode: forwards;
+      animation-duration: 1s;
+    }
+
+    .bar-fail {
+      border-top: 6px solid #f08c8c;
+      border-left: 16px solid #9d0303;
+      background: #e02727;
+      left: 130px;
+      opacity: 0;
+      animation-name: magicht;
+      animation-fill-mode: forwards;
+      animation-duration: 1s;
+      animation-delay: 0.5s;
+      padding: 5px;
+    }
+
+    tr.divider td {
+      height: 7px;
+      padding: 0;
+    }
+
+    tr.whoiam {
+      height: 50px;
+      transition: all 0.5s ease-in 0.1s;
+      color: #fff;
+      opacity: 0;
+      animation-name: magicrow;
+      animation-fill-mode: forwards;
+      animation-duration: 0.5s;
+      /* border-top: 5px solid #eee; */
+    }
+
+    table {
+      /* box-shadow:0 0 8px #ccc; */
+      border-radius: 6px;
+      display: relative;
+      background-color: #eee;
+      width: 80vw;
+      min-width: 80vw;
+      padding: 10px;
+    }
+
+    tr.whoiam td {
+      word-wrap: break-word;
+    }
+
+    tr td {
+      border-radius: 20px 6px 20px 6px;
+      padding: 15px;
+    }
+
+    tr.whoiam td:nth-of-type(2) {
+      width: 150px;
+      max-width: 200px;
+    }
+
+    tr th:nth-of-type(1) {
+      border-radius: 5px 0 0 0;
+    }
+
+    tr th:nth-of-type(4) {
+      border-radius: 0 5px 0 0;
+    }
+
+
+    tr.whoiam:hover {
+      transform: scale(1.005);
+    }
+
+    tr th {
+      background-color: black;
+      color: #fff;
+      padding: 10px;
+      font-size: 1.1rem;
+    }
+
+    .fail {
+      background-color: #e02727c9;
+    }
+
+    tr.whoiam td {
+      position: relative;
+      font-size: 0.9rem;
+      font-weight: bold;
+    }
+
+    .pass {
+      background-color: #24a824c2;
+    }
+
+    .error-div {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+
+    }
+
+    .error,
+    .error-num {
+      color: #ccc;
+    }
+
+    .error {
+      display: inline-block;
+      margin-top: -200px;
+      font-size: 1.5rem;
+    }
+
+    .error-num {
+      font-size: 10.5rem;
+      font-weight: 700;
+    }
+
+    tr.whoiam td:hover {
+      /* background-color: #e91e63; */
+      box-shadow: 0 5px 15px #ccc;
+    }
+
+    @keyframes magicrow {
+      0% {
+        opacity: 0;
+        transform: scale(0.9);
+      }
+
+      50% {
+        opacity: 1;
+        transform: scale(1.005);
+      }
+
+      100% {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    @keyframes magicht {
+      0% {
+        opacity: 0;
+        height: 0;
+      }
+
+      50% {
+        opacity: 1;
+        height: 10px;
+      }
+
+      100% {
+        opacity: 1;
+      }
+    }
+
+
+    @keyframes magicslide {
+      0% {
+        opacity: 0;
+        transform: translateX(30px);
+      }
+
+      50% {
+        opacity: 1;
+        transform: translateX(10px);
+      }
+
+      100% {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class='titans'>
+    <p>Team<span>-</span>Titans</p>
+  </div>
+  <div class='container' id='header'>
+    <table class="main">
+      <tr>
+        <th>#</th>
+        <th>Full Name</th>
+        <th>Infomation</th>
+        <th>Status</th>
+      </tr>
+      <tr class='divider'>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+      </tr>
+      <%for(let i=0; i<da.length; i++) {%>
+      <tr class='whoiam  pass' style='animation-delay: 0.14285714285714s'>
+        <td><%=i+1%></td>
+        <td><%=da[i].name%></td>
+        <td><%=da[i].output%></td>
+        <% if (da[i].status === 'fail') { %>
+          <td style='background-color: #9d0303;'><%=da[i].status%></td>
+          <% } %>
+        <% if (da[i].status === 'pass') { %>
+        <td><%=da[i].status%></td>
+        <% } %>
+
+      </tr>
+      <tr class='divider'>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+      </tr>
+      <%}%>
+      <!-- <tr class='whoiam  pass' style='animation-delay: 0.28571428571429s'>
+        <td>2</td>
+        <td>Zachary Moseti</td>
+        <td>Hello World, this is Zachary Moseti with HNGi7 ID HNG-05091 using JavaScript for stage 2 task</td>
+        <td>pass</td>
+      </tr>
+      <tr class='divider'>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+      </tr> -->
+    </table>
+  </div>
+
+  <script type="text/javascript">
+
+    let scrollTo = document.getElementById('scroll-to');
+
+
+    scrollTo.addEventListener('click', (e) => {
+      scrollToMe('header');
+    });
+
+    function scrollToMe(id) {
+
+      document.getElementById(id).scrollIntoView({
+        behavior: 'smooth'
+      });
+
+    }
+
+    window.onscroll = function () { myFunction() };
+    window.onload = function () { myFunction() };
+
+    function myFunction() {
+      if (document.body.scrollTop > 70 || document.documentElement.scrollTop > 70) {
+        scrollTo.className = "show-scrollTo";
+      } else {
+        scrollTo.className = "hide-scrollTo";
+      }
+    }
+
+
+  </script>
+</body>
+</html>
