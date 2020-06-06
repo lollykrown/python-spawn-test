@@ -405,6 +405,7 @@
 <body>
   <div class='titans'>
     <p>Team<span>-</span>Titans</p>
+    <h6>Built with love with nodeJs</h6>
   </div>
   <div class='container' id='header'>
     <table class="main">
@@ -422,16 +423,18 @@
       </tr>
       <%for(let i=0; i<da.length; i++) {%>
       <tr class='whoiam  pass' style='animation-delay: 0.14285714285714s'>
-        <td><%=i+1%></td>
-        <td><%=da[i].name%></td>
-        <td><%=da[i].output%></td>
         <% if (da[i].status === 'fail') { %>
-          <td style='background-color: #9d0303;'><%=da[i].status%></td>
+          <td style='background-color: #e35252;'><%=i+1%></td>
+          <td style='background-color: #e35252;'><%=da[i].name%></td>
+          <td style='background-color: #e35252;'><%=da[i].output%></td>
+          <td style='background-color: #e35252;'><%=da[i].status%></td>
           <% } %>
         <% if (da[i].status === 'pass') { %>
-        <td><%=da[i].status%></td>
+          <td><%=i+1%></td>
+          <td><%=da[i].name%></td>
+          <td><%=da[i].output%></td>
+          <td><%=da[i].status%></td>
         <% } %>
-
       </tr>
       <tr class='divider'>
         <td></td>
@@ -440,19 +443,27 @@
         <td></td>
       </tr>
       <%}%>
-      <!-- <tr class='whoiam  pass' style='animation-delay: 0.28571428571429s'>
-        <td>2</td>
-        <td>Zachary Moseti</td>
-        <td>Hello World, this is Zachary Moseti with HNGi7 ID HNG-05091 using JavaScript for stage 2 task</td>
-        <td>pass</td>
-      </tr>
-      <tr class='divider'>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-      </tr> -->
     </table>
+    <div class='chart'>
+      <p class='breakdown'>Total <%=da.length%> </p>
+      <span>
+          Pass : <%=pa%>
+      </span>
+      <span>Fail : <%=fa%>
+      </span>
+      <div class='bar-div'>
+        <div class='bar-pass' style='height: <%=pap%>%'>
+          <p><%=pap%>%</p>
+        </div>
+        <div class='bar-fail' style='height: <%=fap%>%'>
+          <p><%=fap%>%</p>
+        </div>
+      </div>
+      <p class='chart-desc'> Percentage of passes</p>
+      <p class='chart-desc'> Percentage of fails</p>
+    </div>
+  </div>
+  <div id='scroll-to' class='hide-scrollTo'><span></span></div>
   </div>
 
   <script type="text/javascript">

@@ -26,7 +26,7 @@ const readdir = promisify(fs.readdir);
 
 const directoryPath = path.join(__dirname + '/' + 'scripts');
 
-app.get('/', (req, res) => {
+app.get('/', cacheMiddleware, (req, res) => {
    async function doStuff(dir) {
       const files = await readdir(dir)
       let dat = [];
@@ -42,8 +42,11 @@ app.get('/', (req, res) => {
                py = spawn('node', [path.join(__dirname, 'scripts', file)]);
             } else if (path.extname(file) === '.php') {
                py = spawn('php', [path.join(__dirname, 'scripts', file)]);
+            } else if (path.extname(file) === '.java') {
+               py = spawn('java', [path.join(__dirname, 'scripts', file)]);
+               console.log('this is a java file')
             } else {
-               console.log(`File type not yet supported ${path.extname(file)}`)
+               console.log(`${path.basename(file)} file type with ext ${path.extname(file)} is not supported`)
             }
             py.stdout.on('data', function (data) {
                //console.log('Pipe data from python file ...');
@@ -51,7 +54,7 @@ app.get('/', (req, res) => {
                const res = str.split(' ');
                const language = `${res[14]}`
                let status;
-               if (language == 'javascript'|| language == 'Javascript' || language == 'python'|| language == 'Python'
+               if (language == 'javascript' || language == 'JavaScript'|| language == 'Javascript' || language == 'python'|| language == 'Python'
                 || language == 'php' || language == 'PHP' || language == 'nodejs' || language == 'NodeJs') {
                   status = 'pass'
                } else {
@@ -80,9 +83,22 @@ app.get('/', (req, res) => {
       }
       py.stdout.on('end', () => {
          //console.log('foobar ending: ', dat)
-         outside = dat
-         res.render('index', {da: dat})
-         //return outside
+         let pass = 0
+         let fail = 0
+         for (let i of dat) {
+            if (i.status === 'pass'){
+               pass = pass + 1
+            }
+            if (i.status === 'fail'){
+               fail = fail+ 1
+            }
+         }
+         let passPercentage = (pass/dat.length) * 100
+         passPercentage = passPercentage.toFixed(2)
+         let failPercentage = (fail/dat.length) * 100
+         failPercentage = failPercentage.toFixed(2)
+
+         res.render('index', {da: dat, pa: pass, fa: fail, pap: passPercentage, fap: failPercentage})
       })
    }
    doStuff(directoryPath)

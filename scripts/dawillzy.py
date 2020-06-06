@@ -1,7 +1,7 @@
-name = "Wilfred Omuvwie"
-id = "HNG-05366"
-email = "dawillzy@gmail.com"
-language = "python"
+def myDetails(name, id, email, language):
+    return f"Hello World, this is {name} with HNGi7 ID {id} and email {email} using {language} for stage 2 task"
 
-myDetails = name + id + email + language
-print("Hello World, this is " + name + " with HNGi7 ID " + id + " using " + language + " for stage 2 task {}".format(myDetails))
+def main():
+    print(myDetails('Wilfred Omuvwie', "HNG-05366", "dawillzy@gmail.com", "python"))
+
+main()
