@@ -405,7 +405,7 @@
 <body>
   <div class='titans'>
     <p>Team<span>-</span>Titans</p>
-    <h6>Built with love with nodeJs</h6>
+    <h6>Built with love using nodeJs</h6>
   </div>
   <div class='container' id='header'>
     <table class="main">
@@ -422,7 +422,7 @@
         <td></td>
       </tr>
       <%for(let i=0; i<da.length; i++) {%>
-      <tr class='whoiam  pass' style='animation-delay: 0.14285714285714s'>
+      <tr class='whoiam  pass' style='animation-delay: <%=(i+1)/7%>s'>
         <% if (da[i].status === 'fail') { %>
           <td style='background-color: #e35252;'><%=i+1%></td>
           <td style='background-color: #e35252;'><%=da[i].name%></td>
