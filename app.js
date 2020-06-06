@@ -10,24 +10,14 @@ const app = express()
 
 const port = 4000
 
-app.use(express.static(path.join(__dirname, '/public/')));
 app.set('views', './views');
 app.set('view engine', 'ejs');
 
-function runScript(file) {
-   return spawn('python', [
-      "-u",
-      path.join(__dirname, 'scripts', file),
-      "--foo", "some value for foo",
-   ]);
-}
 const readdir = promisify(fs.readdir);
 
-
-const directoryPath = path.join(__dirname + '/' + 'scripts');
-
 app.get('/', cacheMiddleware, (req, res) => {
-   async function doStuff(dir) {
+   (async function doStuff() {
+      const dir = path.join(__dirname + '/' + 'scripts');
       const files = await readdir(dir)
       let dat = [];
       let str, py;
@@ -70,7 +60,6 @@ app.get('/', cacheMiddleware, (req, res) => {
             });
             py.stderr.on('data', (code) => {
                console.log(`child process have an error with code ${code}`);
-               //console.log(dataToSend)
             })
             py.on('exit', () => {
                //console.log('foobar exiting: ', dat)               
@@ -98,11 +87,7 @@ app.get('/', cacheMiddleware, (req, res) => {
 
          res.render('index', {da: dat, pa: pass, fa: fail, pap: passPercentage, fap: failPercentage})
       })
-   }
-   doStuff(directoryPath)
+   })();
 });
-// .then(data => {
-//    console.log('data', data)
-// })
 
 app.listen(port, () => console.log(`App listening on port ${port}!`))
